@@ -32,4 +32,4 @@ const UserModel = db.define('users', {
   },
 });
 
-module.exports = UserModel
+module.exports = UserModel;

@@ -7,7 +7,7 @@ const {
 const {
   createUserValidation,
   logingUserValidation,
-} = require('../middleware/users.validation');
+} = require('../middleware/validations.middleware');
 
 const route = express.Router();
 

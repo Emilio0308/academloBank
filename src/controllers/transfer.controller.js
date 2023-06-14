@@ -1,8 +1,9 @@
+const AppError = require('../utils/app.Error');
 const transferModel = require('./../model/transfer.model');
 const UserModel = require('./../model/user.model');
 const catchAsync = require('./../utils/catchAsync');
 
-exports.transfer = catchAsync(async (req, res , next) => {
+exports.transfer = catchAsync(async (req, res, next) => {
   //obtenemos datos necesarios//
   const { senderAccount, receiverAccount, amountToTransfer } = req.body;
   //verificamos q exista la cuenta q envia//
@@ -21,17 +22,11 @@ exports.transfer = catchAsync(async (req, res , next) => {
   });
   //si no existe alguna devolvemos un error//
   if (!(senderUser && receiverUser)) {
-    return res.status(400).json({
-      message: 'account does not exist',
-      status: 'error',
-    });
+    return next(new AppError('account not exist', 404));
   }
   //verificamos que la cuenta que transfiere tenga suficiente dinero//
   if (senderUser.amount < amountToTransfer) {
-    return res.status(400).json({
-      message: 'Not enough Money',
-      status: 'error',
-    });
+    return next(new AppError('insufficient funds', 400));
   }
   //calculamos los nuevos montos para cada usuario//
   const newSenderAmount = senderUser.amount - amountToTransfer;

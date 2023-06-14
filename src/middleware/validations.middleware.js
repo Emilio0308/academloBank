@@ -1,16 +1,16 @@
 const { body, validationResult } = require('express-validator');
 
 const validateFields = (req, res, next) => {
-    const errors = validationResult(req);
-  
-    if (!errors.isEmpty()) {
-      return res.status(400).json({
-        status: 'error',
-        errors: errors.mapped(),
-      });
-    }
-    next();
-  };
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      status: 'error',
+      errors: errors.mapped(),
+    });
+  }
+  next();
+};
 
 exports.createUserValidation = [
   body('name').notEmpty().withMessage('name cannot be empty'),
@@ -19,7 +19,7 @@ exports.createUserValidation = [
     .withMessage('password cannot be empty')
     .isLength({ min: 6 })
     .withMessage('password must be at least 6 characters long'),
-    validateFields,
+  validateFields,
 ];
 exports.logingUserValidation = [
   body('accountNumber')
@@ -32,5 +32,19 @@ exports.logingUserValidation = [
     .withMessage('password can not be empty')
     .isLength({ min: 6 })
     .withMessage('password must be at least 6 digist long'),
+  validateFields,
+];
+exports.tranfersValidation = [
+  body('senderAccount')
+    .notEmpty()
+    .withMessage('account is mandatory')
+    .isLength({ min: 6 })
+    .withMessage('account must be at least 6 charcaters long'),
+  body('receiverAccount')
+    .notEmpty()
+    .withMessage('receiver account is mandatory')
+    .isLength({ min: 6 })
+    .withMessage('account must be at least 6 charcaters long'),
+  body('amountToTransfer').notEmpty().withMessage('amount cannot be empty'),
   validateFields,
 ];

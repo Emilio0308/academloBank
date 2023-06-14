@@ -1,4 +1,6 @@
+const AppError = require('../utils/app.Error');
 const UserModel = require('./../model/user.model');
+const transferModel = require('./../model/transfer.model');
 const catchAsync = require('./../utils/catchAsync');
 
 exports.loggingUser = catchAsync(async (req, res, next) => {
@@ -10,13 +12,11 @@ exports.loggingUser = catchAsync(async (req, res, next) => {
     },
   });
   if (!user) {
-    return res.status(404).json({
-      message: 'not found',
-      status: 'fail',
-    });
+    return next(new AppError('invalid credentials', 401));
   }
   res.status(200).json({
     status: 'success',
+    message: 'login succes',
   });
 });
 
@@ -37,6 +37,19 @@ exports.singUp = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.historyById = (req, res) => {
+exports.historyById = catchAsync(async (req, res, next) => {
   const { id } = req.params;
-};
+  const allTransfer = await transferModel.findAll({
+    where: {
+      senderUserId: id,
+    },
+  });
+  if (!allTransfer) {
+    return next(new AppError('no transfer found for this account', 404));
+  }
+  return res.status(200).json({
+    message: 'all transfer found',
+    status: 'succes',
+    allTransfer,
+  });
+});
